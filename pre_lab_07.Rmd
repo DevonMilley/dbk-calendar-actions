@@ -74,12 +74,12 @@ umterps_calendar
 ```{r}
 
 # Define url of the page we want to get
-umterps_cal_url <- "https://umterps.com/calendar"
+umterps_cal_url <- "https://umterps.com/calendar?date=3/9/2022&vtype=list"
 
 # Get employment html page and select only the table with employment information
 umterps_calendar <- umterps_cal_url %>%
   read_html() %>%
-  html_element(xpath = '//*[@class="sidearm-calendar-table-cell"]')
+  html_element(xpath = '//*[@id="sidearm-calendar-schedule"]')
 
 # Display it so we can see what it looks like
 umterps_calendar
@@ -96,12 +96,12 @@ From here, we can use the html_tables() function to transform it from messy html
 ```{r}
 
 # Define url of the page we want to get
-umterps_cal_url <- "https://umterps.com/calendar"
+umterps_cal_url <- "https://umterps.com/calendar?date=3/9/2022&vtype=list"
 
 # Get employment html page and select only the table with employment information, then transform it from html to a table.
 umterps_calendar <- umterps_cal_url %>%
   read_html() %>%
-  html_element(xpath = '//*[@class="sidearm-calendar-table"]')
+  html_element(xpath = '//*[@id="sidearm-calendar-schedule"]')
   html_table()
 
 # Display it so we can see what it looks like
@@ -139,223 +139,7 @@ employment_info <- employment_info %>%
 employment_info
 ```
 
-Okay, so we've successfully obtained the employment numbers for one of our sectors. That's great.
 
-But remember our original charge: to get a table with employment numbers for ALL sectors, not just one.
-
-This is a little tricky, because, remember, the information for each sector is on a different page!
-
-The info for mining is on this page: [https://www.bls.gov/iag/tgs/iag21.htm](https://www.bls.gov/iag/tgs/iag21.htm).
-
-### Task 12: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**
-
-The info for construction is on this page: [https://www.bls.gov/iag/tgs/iag23.htm](https://www.bls.gov/iag/tgs/iag23.htm).
-
-### Task 13: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**
-
-We have 20 sectors to get through.  
-
-We could get the info we need by copying the codeblock we just wrote 20 times, and change the url at the top each time.  
-
-But that's not a great approach.  
-
-What if we needed to change the code? We'd need to change it 20 times!
-In programming, there's a principle called "DRY" which stands for "Don't Repeat Yourself".  If you find yourself copying the same code over and over again, with minor changes, it's better to find a way to avoid that.
-
-## Using for loops
-
-Fortunately, there's a programming paradigm called "iteration" that is helpful here, using a method called a "for loop".
-
-Every programming language has its own version of a "for loop", and R is no different.
-
-A "for loop" says: "let's take a list of things, and do the same thing to each item on that list."   
-
-Let's look at a very simple example to help illustrate the values of for loops.
-
-We're going to write code to print out 10 industry sectors.  
-
-First, let's do it the repetitive way.  We're writing the same print function over and over, just changing the sector name each time.
-
-### Task 14: Run code to print sectors
-**Task** Run the following code to print sectors. Briefly describe the output that appears below the codeblock.
-**Answer** Each sector description, printed one after another
-```{r}
-
-print("Agriculture, Forestry, Fishing and Hunting")
-print("Mining, Quarrying, and Oil and Gas Extraction")
-print("Utilities")
-print("Construction")
-print("Manufacturing")
-print("Wholesale Trade")
-print("Retail Trade")
-print("Transportation and Warehousing")
-print("Information")
-print("Finance and Insurance")
-
-```
-
-We repeated print() 10 times, with minor modifications each time.  Lots of repetition, which we seek to avoid if possible.
-
-Now let's look at how we might do that a little more efficiently with a "for loop."
-
-First let's make a list of sectors, and save it as an object called "list_of_sectors." The c() function tells R that we're making a list.
-
-### Task 15: Run code to make list of sectors
-**Task** Run the following code to make list of sectors. Briefly describe the output that appears below the codeblock.
-**Answer** there is no output
-```{r}
-list_of_sectors <- c("Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction", "Utilities", "Construction", "Manufacturing",
-"Wholesale Trade", "Retail Trade", "Transportation and Warehousing", "Information", "Finance and Insurance")
-
-```
-
-And now let's write a "for loop" to print out sector on that list.
-
-### Task 16: Run code to use for loop to print sectors
-**Task** Run the following code to use a for loop to print list of sectors. Briefly describe the output that appears below the codeblock.
-**Answer** each sector description, printed one after another
-```{r}
-# Define list of sectors
-list_of_sectors <- c("Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction", "Utilities", "Construction", "Manufacturing",
-"Wholesale Trade", "Retail Trade", "Transportation and Warehousing", "Information", "Finance and Insurance")
-
-# Make a for loop and run it
-for (sector in list_of_sectors) {
-  print(sector)
-}
-
-
-```
-
-That's many fewer lines of code.  Let's break down what we just saw, starting with for `(sector in list_of sectors)`.
-
-The information inside the parentheses tells R what list to use -- list_of_sectors -- and how to identify list elements later on -- sector.
-
-It's important that the thing on the right side of "in" use the exact name of the list we want to loop through -- in this case "list_of_sectors".
-
-If we try to feed it something different -- say "sector_list" -- it won't work, because our actual list is called something else -- "list_of_sectors". This code throws an error.
-
-### Task 17: Run code to use for loop to print sectors that errors
-**Task** Run the following code to use a for loop to print list of sectors that errors. Briefly describe the output that appears below the codeblock.
-**Answer** Error: it can't find sector_list because that's not the name of the list we created
-
-```{r, error=TRUE}
-# Define list of sectors
-list_of_sectors <- c("Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction", "Utilities", "Construction", "Manufacturing",
-"Wholesale Trade", "Retail Trade", "Transportation and Warehousing", "Information", "Finance and Insurance")
-
-# For loop that refers to a list that doesn't exist!  
-for (sector in sector_list) {
-  print(sector)
-}
-
-
-```
-
-The name on the left side of "in" -- the word we're assigning to represent each element -- is totally arbitrary.  
-
-We could use any character string, even something simple like "x".  
-
-What matters is that we use the same character string inside of the curly braces {}, the section of the "for loop" that tells R what to do to each element -- in this case, print it out.    
-
-To illustrate this, note that the code works just fine if we change it to say this:
-
-### Task 18: Run code to use for loop to print sectors
-**Task** Run the following code to use a for loop to print list of sectors. Briefly describe the output that appears below the codeblock.
-**Answer** the sector descriptions, printed one after another
-```{r}
-# Define list of sectors
-list_of_sectors <- c("Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction", "Utilities", "Construction", "Manufacturing",
-"Wholesale Trade", "Retail Trade", "Transportation and Warehousing", "Information", "Finance and Insurance")
-
-# For loop with x that stands in for each element in our list, instead of sector
-for (x in list_of_sectors) {
-  print(x)
-}
-
-
-```
-
-But it does NOT work if we call each element one thing -- x -- in the first line of our "for loop", and use a different name to refer to it inside of the curly braces.
-
-In this code below, it has no idea what we mean by "sector_name", because we haven't defined that anywhere.  
-
-### Task 19: Run code to use for loop to print sectors that errors
-**Task** Run the following code to use a for loop to print list of sectors. Briefly describe the output that appears below the codeblock.
-**Answer** error: couldn't find the sector_name object because that's not what we named it in the for loop
-```{r, error=TRUE}
-# Define list of sectors
-list_of_sectors <- c("Agriculture, Forestry, Fishing and Hunting", "Mining, Quarrying, and Oil and Gas Extraction", "Utilities", "Construction", "Manufacturing",
-"Wholesale Trade", "Retail Trade", "Transportation and Warehousing", "Information", "Finance and Insurance")
-
-# For loop that includes instructions that refer to a variable that doesn't exist.
-for (x in list_of_sectors) {
-  print(sector_name)
-}
-
-
-```
-
-We can also write for loops to iterate over a range of numbers, instead of a list of characters.  The syntax is a little different.
-
-The code below says: "for each number in a range of numbers from 1 to 10, print the number."  
-
-### Task 20: Run code to use for loop to print 1 to 10
-**Task** Run the following code to use a for loop to print 1 to 10. Briefly describe the output that appears below the codeblock.
-**Answer** the numbers 1 through 10, printed one after another
-```{r}
-# For loop that includes instructions that refer to a variable that doesn't exist.
-for (number in 1:10) {
-  print(number)
-}
-```
-
-Here's a minor variation on that approach that we'll make use of below.  
-
-Instead of giving the for loop an explicit number range, like 1:10, we can tell it to use 1 to "the number of rows in a dataframe" as our list of things to loop through.
-
-Remember the naics_industry dataframe we loaded first? It has 20 rows.
-### Task 21: Run code to display naics_industry
-**Task** Run the following code to display naics_industry. Briefly describe the output that appears below the codeblock.
-**Answer** a tibble of the cleaned sector table 
-```{r}
-
-naics_industry
-
-```
-
-We can use that information in our for loop by using the nrow() function, which calculates the number of rows in a dataframe.  Here's a quick demonstration of how that works.
-
-### Task 22: Run code to display number of rows in naics_industry
-**Task** Run the following code to display number of rows naics_industry. Briefly describe the output that appears below the codeblock.
-**Answer** the numbers of rows in naics_industry
-
-```{r}
-nrow(naics_industry)
-```
-
-To put it all together, the code below says "make a list of numbers that starts at 1 and ends at the number of rows in the naics_industry dataframe (which is 20), then print out each of these numbers."
-
-### Task 23: Run code to print each row number in naics_industry
-**Task** Run the following code to to print each row number in naics_industry. Briefly describe the output that appears below the codeblock.
-**Answer** each row number in naics_industry, printed out one after another
-
-```{r}
-# For loop that includes instructions that refer to a variable that doesn't exist.
-for (row_number in 1:nrow(naics_industry)) {
-  print(row_number)
-}
-```
-
-These were basic examples of how "for loops" work.  Next, we'll learn to apply "for loops" to efficentily extract information from multiple web pages.
-
-## Looping and rvest
-
-First, let's look at the codeblock we wrote earlier to extract the number of employees in the mining sector.
 
 ### Task 24: Run code to load table from earlier
 **Task** Run the following code to load table from earlier. Briefly describe the output that appears below the codeblock.
@@ -778,31 +562,7 @@ Let's figure out why.
 
 Here's the table on the mining sector page: [https://www.bls.gov/iag/tgs/iag21.htm](https://www.bls.gov/iag/tgs/iag21.htm)
 
-### Task 36: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer** Employment information for the mining sector
 
-### Task 37: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/advrvest3.png"))
-```
-And here's the table for the agriculture sector.
-
-[https://www.bls.gov/iag/tgs/iag11.htm](https://www.bls.gov/iag/tgs/iag11.htm)
-
-### Task 38: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer** employment information for the agriculture sector.
-
-### Task 39: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/advrvest4.png"))
-```
-Unlike mining -- and every other sector page (I checked each page) -- the agriculture page is structured differently.  
 
 In the second row of this table, it has the unemployment rate. Nowhere on the page can we find information on the number of employees.  We would need to do additional research to track down a valid number if we plan on using this table, but for now we're going to replace it with an NA using na_if.
 
