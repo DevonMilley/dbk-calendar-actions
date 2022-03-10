@@ -9,257 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Instructor demonstration points to hit
-1. Ensure students install rvest package and load it.
-
-
-## Chapter 15
-
-### Task 1: Load packages
-**Task** Run the following code to load packages.
-
-```{r}
-library(rvest)
-library(tidyverse)
-library(janitor)
-```
-
-For this example, we're going to work on loading a simple table of data from the Bureau of Labor Statistics. This is a table of industry sectors (each with a two-digit NAICS code) that we could make use of in our analysis of PPP loan data.
-
-Recall that our PPP loan data has six-digit NAICS codes for each industry, which allows us to identify the industry for each loan.  For example 212221 is the code for "Gold Mining Industry".
-
-A six-digit NAICS code is the most specific.  As we remove numbers from the right to create five-digit, four-digit, three-digit and two-digit codes, the industries they represent get broader. Here's an example:
-
-* 212221 - Gold Mining Industry
-* 2122 - Metal Ore Mining Industry (which includes gold mining and things like silver mining, iron mining and copper mining)
-* 21 - Mining, Quarrying, and Oil and Gas Extraction Industry (which contains the metal mining industries mentioned above, but also oil drilling, coal mining and more).
-
-It might be useful to have a lookup table of those top-level, two-digit NAICS codes (also called sector codes) for our analysis, to help us answer questions about what specific top-level industries got loans.  L
-
-Let's suppose we can't find a table like that for download, but we do see a version on the BLS website at this URL: [https://www.bls.gov/ces/naics/](https://www.bls.gov/ces/naics/).
-
-### Task 2: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**I see a page about employment statistics, with many tables breaking down the different employment industries.
-
-### Task 3: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest1.png"))
-```
-We could get this table into R with the following manual steps: highlighting the text, copying it into Excel, saving it as a csv, and reading it into R.  
-
-Or, we could write a few lines of webscraping code to have R do that for us!
-
-In this simple example, it's probably faster to do it manually than have R do it for us. And this table is unlikely to change much in the future.
-
-Why would we ever write code to grab a single table? There's several reasons:
-
-1. Our methods are transparent.  If a colleague wants to run our code from scratch to factcheck our work, they don't need to repeat the manual steps, which are harder to document than writing code.
-2. Let's suppose we wanted to grab the same table every day, to monitor for changes (like, say, a table on a health department website that has COVID case numbers that update every day).  Writing a script once, and pressing a single button every day is going to be much more efficient than doing this manually every day.
-3. If we're doing it manually, we're more likely to make a mistake, like maybe failing to copy every row from the whole table.
-4. It's good practice to prepare us to do more complex scraping jobs.  As we'll see in the next chapter, if we ever want to grab the same table from hundreds of pages, writing code is much faster and easier than going to a hundred different pages ourselves and downloading data.
-
-So, to scrape, the first thing we need to do is start with the URL. Let's store it as an object called naics_url.
-
-### Task 4: Store URL
-**Task** Run the following code to store the URL.
-
-```{r}
-naics_url <- "https://www.bls.gov/ces/naics/"
-```
-
-When we go to the web page, we can see a nicely-designed page that contains our information.  
-
-But what we really care about, for our purposes, is the html code that creates that page.  
-
-In our web browser, if we right-click anywhere on the page and select "view source" from the popup menu, we can see the source code.  Or you can just copy this into Google Chrome: view-source:https://www.bls.gov/ces/naics/.
-
-### Task 3: View source
-**Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer** I see lots of HTML code.
-
-Here's a picture of what some of the source code looks like.
-
-### Task 4: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest2.png"))
-```
-We'll use those HTML tags -- things like `<div>` and `<a>` and `<table>` -- to grab the info we need.
-
-Okay, step 1.  
-
-Let's write a bit of code to tell R to go to the URL for the page and ingest all of that HTML code. In the code below, we're starting with our URL and using the read_html() function from rvest to ingest all of the page html, storing it as an object called naics_industry.
-
-### Task 5: Run code to read in html
-**Task** Run the following code to read in the html. Briefly describe the output that appears below the codeblock.
-**Answer** a list containing an HTML head tag and body tag with information from the website in each tag
-
-```{r}
-# read in the html
-naics_industry <- naics_url %>%
-  read_html()
-
-# display the html below
-naics_industry
-
-```
-
-If you're running this code in R Studio, in our environment window at right, you'll see naics_industry as a "list of 2".  
-
-This is not a dataframe, it's a different type of data structure a "nested list."
-
-If we click on the name "naics_industry" in our environment window, we can see that it's pulled in the html and shown us the general page structure.
-
-### Task 6: Examine html
-**Task** Follow the directions in the previous paragraph to click on naics_industry in the environment window. Briefly describe what you see there.
-**Answer** an HTML tag with the head tag and body tag nested inside it
-
-Nested within the `<html>` tag is the `<head>` and `<body>`, the two fundamental sections of most web pages. We're going to pull information out of the `<body>` tag in a bit.
-
-### Task 7: Load image
-**Task** Run the following code to display an image showing what you should see when clicking on naics in the environment window.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest3.png"))
-```
-
-Now, our task is to just pull out the section of the html that contains the information we need.  
-
-But which part do we need from that mess of html code? To figure that out, we can go back to the page in a web browser like chrome, and use built in developer tools to "inspect" the html code underlying the page.  
-
-On the page, find the data we want to grab -- "Table 2. NAICS Sectors" - and right click on the word "Sector" in the column header of the table.  That will bring up a dropdown menu. Select "Inspect", which will pop up a window called the "element inspector" that shows us where different elements on the page are located, what html tags created those elements, and other info.
-
-### Task 8: Inspect element
-**Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer** The word sectors is in a span tag. The span tag is nested in a caption tag that's nested in a table tag.
-
-### Task 9: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest4.png"))
-```
-
-The entire table that we want of naics sectors is actually contained inside an html `<table>`. It has a header row `<thead>` that contains the column names and a `<tbody>` that contains one row `<tr>` per industry sector code.
-
-Because it's inside of a table, and not some other kind of element (like a `<div>`), rvest has a special function for easily extracting and converting html tables, called html_table(). This function extracts all six html tables on the page, only one of which we actually want.
-
-### Task 10: Run code to process tables
-**Task** Run the following code to process tables. Briefly describe the output that appears below the codeblock.
-**Answer** There are seven tibbles, one for each table on the web page. 
-
-```{r}
-# read in the html and extract all the tables
-naics_industry <- naics_url %>%
-  read_html() %>%
-  html_table()
-
-# display the tables below
-naics_industry
-
-```
-
-In the environment window at right, look at naics_industry.  Note that it's now a "list of 6".  
-
-Click on it to open it up.  
-
-### Task 11: Inspect naics_industry.
-**Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer** It is a list of all the tables we just pulled from the website
-
-It should look like this.
-
-### Task 12: Load image
-**Task** Run the following code to display an image.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest5.png"))
-```
-This gets a little complicated, but what you're seeing here is a nested list that contains six different data frames -- also called tibbles --  one for each table that exists on the web page we scraped.
-
-They're numbered 1 to 6.  The first 1 has 4 rows and 3 columns, the second has 21 rows and 2 columns, and so on.   
-
-To examine what's in each dataframe, mouse over the right edge (next to the word columns) on each row, and click the little scroll icon.  The icon will be hidden until you mouse over it.  
-
-Click on the scroll icon for the first dataframe examine it.
-
-### Task 13: Click scroll icon
-**Task** Follow the directions in the previous paragraphs. Briefly describe what you see there.
-**Answer** It brings up each table
-
-### Task 14: Load image
-**Task** Run the following code to display an image showing what you should see when you follow the steps in task 13.
-
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest6.png"))
-```
-
-That's not the one we want!  
-
-Let's try clicking on the scroll icon for row 2.
-
-### Task 15: Click scroll icon
-**Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer** It is a table of Each Sector and a description of the sector number.
-
-### Task 16: Load image
-**Task** **Task** Run the following code to display an image showing what you should see when you follow the steps in task 15.
-
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/rvest7.png"))
-```
-
-That's more like it! So, all we need to do now is to store that single dataframe as an object, and get rid of the rest.  We can do that with this code, which says "keep only the second dataframe from our nested list. If we wanted to keep the third one, we'd change the number 2 to number 3.
-
-### Task 17: Run code to keep only table we want
-**Task** Run the following code to keep only the table we want. Briefly describe the output that appears below the codeblock.
-**Answer** One tibble of the table from the website we wanted
-
-```{r}
-# Read in all html from table, store all tables on page as nested list of dataframes.
-naics_industry  <- naics_url %>%
-  read_html() %>%
-  html_table()
-
-# Just keep the second dataframe in our list
-
-naics_industry <- naics_industry[[2]]
-
-# show the dataframe
-
-naics_industry
-
-```
-
-We now have a proper dataframe.
-
-From here, we can do a little light cleaning. Let's use clean_names() to standardize the column names.  Then let's use slice() to remove the last row -- row number 21 -- which contains source information that will complicate our use of this table later.
-
-### Task 18: Run code to do some light cleaning
-**Task** Run the following code to do light cleaning. Briefly describe the output that appears below the codeblock.
-**Answer** It lowercased the headings and got rid of the laast row in the tibble
-
-```{r}
-# Read in all html from table, store all tables on page as nested list of dataframes.
-naics_industry <- naics_url %>%
-  read_html() %>%
-  html_table()
-
-# Just keep the second dataframe in our list, standardize column headers, remove last row
-
-naics_industry <- naics_industry[[2]] %>%
-  clean_names() %>%
-  slice(-21)
-
-# show the dataframe
-naics_industry
-
-```
-
-And there we go. We now have a nice tidy dataframe of NAICS sector codes.  
-
-In the next chapter, we'll look at a more complicated example.
-
 ## Chapter 16
 
 In the last chapter, we demonstrated a fairly straightforward example of web scraping to grab a list of NAICS industry sector codes from the BLS website.  
@@ -280,63 +29,6 @@ library(tidyverse)
 library(janitor)
 ```
 
-Now, let's run the code we wrote in the last chapter, to get a tidy list of NAICS sector codes and names from [https://www.bls.gov/ces/naics/]("https://www.bls.gov/ces/naics/").
-
-### Task 2: Run code to load the table from the last chapter
-**Task** Run the following code to load table from last chapter. Briefly describe the output that appears below the codeblock.
-**Answer** a cleaned tibble of the sector and description od each sector number
-```{r}
-# Define url of page we want to scrape
-
-naics_url <- "https://www.bls.gov/ces/naics/"
-
-# Read in all html from table, store all tables on page as nested list of dataframes.
-naics_industry  <- naics_url %>%
-  read_html() %>%
-  html_table()
-
-# Just keep the second dataframe in our list, standardize column headers, remove last row
-
-naics_industry <- naics_industry[[2]] %>%
-  clean_names() %>%
-  slice(-21)
-
-# show the dataframe
-naics_industry
-
-```
-
-We'll use this table to help us get to our end goal: a single dataframe with the number of employees in each industry sector.
-
-It will look like this when we're done.  
-
-### Task 3: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/advrvest1a.png"))
-```
-
-Unfortunately, that information doesn't exist in a single tidy table on a single page we can scrape all at once.  We're going to have to scrape it from lots of different pages, and build it ourselves.
-
-Let's next take a look at the web page that has detailed employment information for one of our sectors, 22, Mining, Quarrying, and Oil and Gas Extraction.  
-
-We can find it here: [https://www.bls.gov/iag/tgs/iag22.htm](https://www.bls.gov/iag/tgs/iag22.htm).
-
-### Task 4: Go to the web page linked above
-**Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer** Information for NAICS sector 22
-
-A few scrolls down the page, there's a table that has employee statistics.  
-
-The table is called "Employment and Unemployment". There's a row in the tabled for "Employment, all employees (seasonally adjusted)".  And in that row, there's a value for the number of employees -- in thousands -- in June 2021.  
-
-The table shows that for the mining sector, it was 538.6  -- or 538,600 -- in June 2021.  That's the value we want to ingest in R. 
-
-### Task 5: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/advrvest1.png"))
-```
 
 We don't just want it for mining.  We want it for all sectors!  
 
@@ -350,7 +42,7 @@ First, let's define the URL of the page we want to get the information from.
 ```{r}
 
 # Define url of the page we want to get
-url <- "https://www.bls.gov/iag/tgs/iag22.htm"
+umterps_cal_url <- "https://umterps.com/calendar"
 
 ```
 
@@ -363,39 +55,17 @@ Next, let's read in the html of that page, and store it as an object called empl
 ```{r}
 
 # Define url of the page we want to get
-url <- "https://www.bls.gov/iag/tgs/iag22.htm"
+umterps_cal_url <- "https://umterps.com/calendar"
 
 # Get employment html
-employment_info <- url %>%
+umterps_calendar <- umterps_cal_url %>%
   read_html()  
 
 # Display it so we can see what it looks like
-employment_info
+umterps_calendar
 
 ```
 
-Now, let's set to picking out the information we need from the raw html.
-
-We can use the web inspector in our web browser (Chrome) to figure out where the table is located.
-
-Go to the web page and right click on the word "Data Series" in the table, then pick "inspect" to pull up the menu.
-
-Notice two things.  First, all of this information is contained in a proper html `<table>`.  And that table has an id property of "iag22emp1". Designers use these IDs to help style the page, to target certain elements with CSS. We can use it to scrape.
-
-### Task 8: Load image
-**Task** Run the following code to display an image showing what you should see on the web page.
-```{r, echo=FALSE}
-knitr::include_graphics(rep("images/advrvest2.png"))
-```
-Recall that in the last chapter, when we used the html_table() function, it pulled in every single table on the page, six in total.  
-
-Here, we can use that id property to pick out just the table we want, and leave all the others behind.
-
-We do that with a new function from rvest called html_element(), employing a bit of information about that element stored in what's called the  [xpath](https://en.wikipedia.org/wiki/XPath). Xpath is a query language that helps us write programs that target specific parts of web pages.  
-
-The syntax is a little unwieldy, I know.
-
-But essentially what the html_element function says is "find the html element that has an id of iag22emp1, using the xpath method, and get rid of all other elements".
 
 ### Task 9: Run code to get html_element with info we need
 **Task** Run the following code to get html_element with info we need. Briefly describe the output that appears below the codeblock.
@@ -404,15 +74,15 @@ But essentially what the html_element function says is "find the html element th
 ```{r}
 
 # Define url of the page we want to get
-url <- "https://www.bls.gov/iag/tgs/iag22.htm"
+umterps_cal_url <- "https://umterps.com/calendar"
 
 # Get employment html page and select only the table with employment information
-employment_info <- url %>%
+umterps_calendar <- umterps_cal_url %>%
   read_html() %>%
-  html_element(xpath = '//*[@id="iag22emp1"]')
+  html_element(xpath = '//*[@class="sidearm-calendar-table-cell"]')
 
 # Display it so we can see what it looks like
-employment_info
+umterps_calendar
 ```
 
 We've now isolated the table on the page that contains the information we need, and gotten rid of everything else.
@@ -426,16 +96,16 @@ From here, we can use the html_tables() function to transform it from messy html
 ```{r}
 
 # Define url of the page we want to get
-url <- "https://www.bls.gov/iag/tgs/iag22.htm"
+umterps_cal_url <- "https://umterps.com/calendar"
 
 # Get employment html page and select only the table with employment information, then transform it from html to a table.
-employment_info <- url %>%
+umterps_calendar <- umterps_cal_url %>%
   read_html() %>%
-  html_element(xpath = '//*[@id="iag22emp1"]') %>%
+  html_element(xpath = '//*[@class="sidearm-calendar-table"]')
   html_table()
 
 # Display it so we can see what it looks like
-employment_info
+umterps_calendar
 ```
 
 Now we have a proper dataframe of 6 rows and 6 columns.  
