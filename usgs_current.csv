@@ -1,8 +1,8 @@
 time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
-2022-03-13T08:26:06.290Z,38.7893333,-122.7606659,1.66,0.36,md,8,130,0.0113,0.01,nc,nc73704976,2022-03-13T08:27:42.773Z,"1km NNW of The Geysers, CA",earthquake,0.42,0.88,,1,automatic,nc,nc
-2022-03-13T08:18:12.640Z,38.177166,-122.2908325,8.82,1.7,md,26,58,0.1042,0.1,nc,nc73704971,2022-03-13T08:28:10.672Z,"3km W of American Canyon, CA",earthquake,0.29,0.71,0.1,19,automatic,nc,nc
+2022-03-13T08:26:06.290Z,38.7893333,-122.7606659,1.66,0.36,md,8,130,0.0113,0.01,nc,nc73704976,2022-03-13T08:35:11.719Z,"1km NNW of The Geysers, CA",earthquake,0.42,0.88,,1,automatic,nc,nc
+2022-03-13T08:18:12.640Z,38.177166,-122.2908325,8.82,1.7,md,26,58,0.1042,0.1,nc,nc73704971,2022-03-13T08:35:29.677Z,"3km W of American Canyon, CA",earthquake,0.29,0.71,0.1,19,automatic,nc,nc
 2022-03-13T08:13:23.920Z,46.6088333129883,-119.84033203125,5.92000007629395,2.32999992,md,19,106,,0.0700000003,uw,uw61822226,2022-03-13T08:16:26.440Z,"9 km SE of Desert Aire, Washington",earthquake,0.64,0.25,0.0299999993,4,automatic,uw,uw
-2022-03-13T08:00:07.600Z,38.8138351,-122.8193359,2.49,0.85,md,10,84,0.00915,0.02,nc,nc73704956,2022-03-13T08:31:10.694Z,"7km NW of The Geysers, CA",earthquake,0.41,0.79,,1,automatic,nc,nc
+2022-03-13T08:00:07.600Z,38.8138351,-122.8193359,2.49,0.85,md,10,84,0.00915,0.02,nc,nc73704956,2022-03-13T08:33:13.706Z,"7km NW of The Geysers, CA",earthquake,0.41,0.79,,1,automatic,nc,nc
 2022-03-13T07:48:22.992Z,63.1548,-151.4546,3.7,1.4,ml,,,,1.13,ak,ak0223b75cxk,2022-03-13T07:59:19.542Z,"45 km SSE of Denali National Park, Alaska",earthquake,,0.3,,,automatic,ak,ak
 2022-03-13T07:38:47.820Z,33.0518333,-116.213,6.69,1.21,ml,25,75,0.1103,0.21,ci,ci40206592,2022-03-13T07:42:21.977Z,"13km SW of Ocotillo Wells, CA",earthquake,0.34,1.12,0.257,26,automatic,ci,ci
 2022-03-13T07:38:29.025Z,-2.2078,100.0575,46.97,4.6,mb,,115,2.701,0.52,us,us6000h45f,2022-03-13T08:12:12.040Z,"Kepulauan Mentawai region, Indonesia",earthquake,7.3,5.6,0.088,39,reviewed,us,us
@@ -184,4 +184,3 @@ time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,
 2022-03-12T09:04:51.369Z,61.9151,-144.0836,4.9,1.5,ml,,,,0.51,ak,ak02239kjibc,2022-03-12T09:22:46.811Z,"48 km NNE of Chitina, Alaska",earthquake,,0.2,,,automatic,ak,ak
 2022-03-12T08:59:50.180Z,17.9515,-66.8506666666667,14.06,2.26,md,8,208,,0.18,pr,pr71339898,2022-03-12T09:34:14.730Z,"5 km SE of Maria Antonia, Puerto Rico",earthquake,0.73,0.66,0.116247571660397,6,reviewed,pr,pr
 2022-03-12T08:56:42.690Z,33.9976667,-116.7521667,13.19,1.77,ml,64,24,0.05943,0.19,ci,ci40205776,2022-03-12T09:07:29.980Z,"10km NNE of Cabazon, CA",earthquake,0.19,0.48,0.199,26,automatic,ci,ci
-2022-03-12T08:40:36.420Z,17.8195,-66.9461666666667,10.89,2.28,md,6,295,,0.07,pr,pr71339893,2022-03-12T09:06:01.050Z,"17 km SSW of Guánica, Puerto Rico",earthquake,0.99,0.73,0.0519969064516159,5,reviewed,pr,pr
