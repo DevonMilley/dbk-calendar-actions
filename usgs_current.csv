@@ -20,7 +20,7 @@ time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,
 2022-03-17T03:22:54.560Z,38.8380013,-122.7854996,1.05,0.36,md,9,84,0.003805,0.01,nc,nc73706631,2022-03-17T05:19:16.101Z,"6km WNW of Cobb, CA",earthquake,0.39,0.92,,1,automatic,nc,nc
 2022-03-17T03:17:41.926Z,61.752,-152.0329,97.1,2.1,ml,,,,0.63,ak,ak0223hqqepj,2022-03-17T03:30:04.870Z,"42 km SW of Skwentna, Alaska",earthquake,,0.7,,,automatic,ak,ak
 2022-03-17T03:16:01.530Z,38.8251667,-122.786,1.41,-0.31,md,11,72,0.01259,0.03,nc,nc73706626,2022-03-17T04:59:36.524Z,"6km W of Cobb, CA",earthquake,0.23,0.37,,1,reviewed,nc,nc
-2022-03-17T03:03:29.510Z,39.0705,-123.0518333,2.19,2.01,md,46,56,0.07854,0.06,nc,nc73706616,2022-03-17T04:54:15.960Z,"12km WNW of Lakeport, CA",earthquake,0.13,0.91,0.219,32,reviewed,nc,nc
+2022-03-17T03:03:29.510Z,39.0705,-123.0518333,2.19,2.01,md,46,56,0.07854,0.06,nc,nc73706616,2022-03-17T05:53:11.295Z,"12km WNW of Lakeport, CA",earthquake,0.13,0.91,0.219,32,reviewed,nc,nc
 2022-03-17T02:50:57.367Z,60.2851,-152.0911,72.9,1.8,ml,,,,0.62,ak,ak0223hqc2yw,2022-03-17T02:52:44.746Z,"35 km NW of Ninilchik, Alaska",earthquake,,1.1,,,automatic,ak,ak
 2022-03-17T02:37:13.900Z,36.0241667,-117.775,1.75,0.97,ml,12,65,0.007964,0.18,ci,ci39969751,2022-03-17T02:40:54.873Z,"15km NE of Little Lake, CA",earthquake,0.33,0.35,0.176,13,automatic,ci,ci
 2022-03-17T02:34:01.520Z,40.144,-123.8188333,22.68,1.88,md,21,77,0.04434,0.09,nc,nc73706611,2022-03-17T04:57:17.977Z,"3km N of Redway, CA",earthquake,0.26,0.26,0.192,16,reviewed,nc,nc
@@ -225,6 +225,3 @@ time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,
 2022-03-16T06:02:20.940Z,33.3771667,-116.875,5.5,0.59,ml,16,120,0.02567,0.17,ci,ci39969119,2022-03-16T13:16:38.660Z,"3km NNW of Palomar Observatory, CA",earthquake,0.75,1.26,0.543,3,reviewed,ci,ci
 2022-03-16T05:58:03.069Z,35.94916667,-97.72666667,7.16,1.21,ml,79,34,0.1790648614,0.18,ok,ok2022ffrb,2022-03-16T12:57:27.708Z,"11 km W of Crescent, Oklahoma",earthquake,,0.4,0.23,25,reviewed,ok,ok
 2022-03-16T05:57:10.500Z,35.9475,-97.72333333,5,1.38,ml,79,34,0.1772652145,0.2,ok,ok2022ffra,2022-03-16T12:50:18.369Z,"11 km W of Crescent, Oklahoma",earthquake,,0.4,0.24,28,reviewed,ok,ok
-2022-03-16T05:51:35.002Z,62.8297,-152.5986,0,1.4,ml,,,,1.2,ak,ak0223g4l79v,2022-03-16T05:54:55.056Z,"90 km SSW of Denali National Park, Alaska",earthquake,,0.5,,,automatic,ak,ak
-2022-03-16T05:50:08.550Z,38.8344994,-122.7600021,0.69,0.67,md,7,165,0.008724,0.02,nc,nc73706301,2022-03-16T06:27:15.206Z,"4km WNW of Cobb, CA",earthquake,0.45,0.78,0.15,2,automatic,nc,nc
-2022-03-16T05:46:40.850Z,35.3556667,-117.7605,6.8,0.97,ml,26,90,0.1123,0.15,ci,ci39969111,2022-03-16T15:33:26.913Z,"12km W of Johannesburg, CA",earthquake,0.24,0.65,0.075,11,reviewed,ci,ci
